@@ -1,0 +1,3 @@
+# Railway/Nixpacks: Tailwind v4 + React Router need Node 20+; avoids oxide issues on Node 18.
+[variables]
+NIXPACKS_NODE_VERSION = "20"

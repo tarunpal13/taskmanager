@@ -95,12 +95,13 @@ The server serves the built SPA from `client/dist` and exposes REST routes under
    - `JWT_SECRET` — long random string (required for production; the server enforces this when `NODE_ENV=production`).
    - `NODE_ENV` — `production`.
 4. **Root directory**: repository root (default).
-5. **Build command** (if not using `railway.toml`): `npm install && npm run build`
-6. **Start command**: `npm run start`
+5. **Node 20:** The repo ships `nixpacks.toml` and `package.json` `engines` so Railway’s Nixpacks builder uses **Node 20** (fixes Tailwind/build failures on Node 18).
+6. **Build command** (if not using `railway.toml`): `npm install && npm run build`
+7. **Start command**: `npm run start`
 
 On deploy, `npm run start` runs `prisma migrate deploy` then the server, so the schema is applied automatically.
 
-7. Generate a **public domain**: Service → Settings → Networking → Generate domain.
+8. Generate a **public domain**: Service → Settings → Networking → Generate domain.
 
 After deploy, open the URL, **register**, and use the app in the browser.
 
