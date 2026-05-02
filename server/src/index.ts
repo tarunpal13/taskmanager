@@ -4,11 +4,14 @@ import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import express from "express";
 import cors from "cors";
+import { assertStartupEnv } from "./startup-check.js";
 import authRoutes from "./routes/auth.js";
 import projectRoutes from "./routes/projects.js";
 import taskRoutes from "./routes/tasks.js";
 import taskByIdRoutes from "./routes/taskById.js";
 import dashboardRoutes from "./routes/dashboard.js";
+
+assertStartupEnv();
 
 const app = express();
 const PORT = Number(process.env.PORT) || 4000;
@@ -46,6 +49,7 @@ app.use((err: unknown, _req: express.Request, res: express.Response, _next: expr
   res.status(500).json({ error: "Internal server error" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
+const HOST = process.env.HOST ?? "0.0.0.0";
+app.listen(PORT, HOST, () => {
+  console.log(`Server listening on http://${HOST}:${PORT}`);
 });

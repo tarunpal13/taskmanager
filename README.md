@@ -96,7 +96,8 @@ The server serves the built SPA from `client/dist` and exposes REST routes under
    - `NODE_ENV` — `production`.
 4. **Root directory**: repository root (default).
 5. **Node 20:** The repo ships `nixpacks.toml` and `package.json` `engines` so Railway’s Nixpacks builder uses **Node 20** (fixes Tailwind/build failures on Node 18).
-6. **Build command** (if not using `railway.toml`): `npm install && npm run build`
+6. **Build command** (if not using `railway.toml`): `npm install --include=dev && npm run build`  
+   (`--include=dev` is required so **vite** and **typescript** install during Railway’s production image build.)
 7. **Start command**: `npm run start`
 
 On deploy, `npm run start` runs `prisma migrate deploy` then the server, so the schema is applied automatically.
@@ -104,6 +105,24 @@ On deploy, `npm run start` runs `prisma migrate deploy` then the server, so the 
 8. Generate a **public domain**: Service → Settings → Networking → Generate domain.
 
 After deploy, open the URL, **register**, and use the app in the browser.
+
+### Railway troubleshooting (service keeps restarting)
+
+Use **one Node service** for this repo: it builds the React app and the API together and serves both. Do **not** add a separate “client-only” service unless you know how to split the deployment—extra services often crash or show “Not Found”.
+
+**Check variables on that same Node service** (not only on Postgres):
+
+| Variable | Notes |
+|----------|--------|
+| `DATABASE_URL` | Reference/copy from your Railway Postgres. If migrations fail, try the **direct** connection URL (Railway sometimes labels pooler vs direct—migrations need a URL that accepts DDL). |
+| `JWT_SECRET` | Any long random string. Missing → process exits in production. |
+| `NODE_ENV` | Set to `production`. |
+
+**Logs:** Open **Deployments → View logs**.  
+If you see `[start-prod] Migration failed`, fix `DATABASE_URL` (direct URL / SSL).  
+If you see `Missing required env: JWT_SECRET`, add it under Variables.
+
+The API listens on **`0.0.0.0`** and Railway’s **`PORT`** automatically.
 
 ## REST API overview
 

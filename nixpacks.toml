@@ -1,3 +1,5 @@
 # Railway/Nixpacks: Tailwind v4 + React Router need Node 20+; avoids oxide issues on Node 18.
 [variables]
 NIXPACKS_NODE_VERSION = "20"
+# Without this, npm install during Docker build skips devDeps → "vite: not found", "tsc: not found".
+NPM_CONFIG_PRODUCTION = "false"
